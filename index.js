@@ -3,11 +3,14 @@
 /**
  * element toggle function
  */
-
-const elemToggleFunc = function (elem) { elem.classList.toggle("active"); }
-
+const elemToggleFunc = function (elem) {
+  elem.classList.toggle("active");
+};
 
 document.addEventListener("DOMContentLoaded", () => {
+  /**
+   * Dynamic Typing Effect
+   */
   const dynamicText = document.querySelector(".dynamic-text");
   const titles = [
     "Web Developer ",
@@ -25,28 +28,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentTitle = titles[titleIndex];
 
     if (isDeleting) {
-      // Remove characters
       dynamicText.textContent = currentTitle.substring(0, charIndex - 1) + "|";
       charIndex--;
     } else {
-      // Add characters
       dynamicText.textContent = currentTitle.substring(0, charIndex + 1) + "|";
       charIndex++;
     }
 
-    // Speed control
     let typeSpeed = isDeleting ? 50 : 150;
 
-    // If word is complete
     if (!isDeleting && charIndex === currentTitle.length) {
-      // Pause at end
       typeSpeed = 2000;
       isDeleting = true;
     } else if (isDeleting && charIndex === 0) {
       isDeleting = false;
-      // Move to next title
       titleIndex = (titleIndex + 1) % titles.length;
-      // Pause before starting new word
       typeSpeed = 500;
     }
 
@@ -54,98 +50,95 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   typeEffect();
-});
 
-/**
- * header sticky & go to top
- */
+  /**
+   * Header Sticky & Go to Top Button
+   */
+  const header = document.querySelector("[data-header]");
+  const goTopBtn = document.querySelector("[data-go-top]");
 
-const header = document.querySelector("[data-header]");
-const goTopBtn = document.querySelector("[data-go-top]");
+  window.addEventListener("scroll", function () {
+    if (window.scrollY >= 10) {
+      header.classList.add("active");
+      goTopBtn.classList.add("active");
+    } else {
+      header.classList.remove("active");
+      goTopBtn.classList.remove("active");
+    }
+  });
 
-window.addEventListener("scroll", function () {
+  /**
+   * Navbar Toggle
+   */
+  const navToggleBtn = document.querySelector("[data-nav-toggle-btn]");
+  const navbar = document.querySelector("[data-navbar]");
+  const navbarLinks = document.querySelectorAll(".navbar-link");
 
-  if (window.scrollY >= 10) {
-    header.classList.add("active");
-    goTopBtn.classList.add("active");
-  } else {
-    header.classList.remove("active");
-    goTopBtn.classList.remove("active");
+  navToggleBtn.addEventListener("click", function () {
+    elemToggleFunc(navToggleBtn);
+    elemToggleFunc(navbar);
+    elemToggleFunc(document.body);
+  });
+
+  // Close menu when a navbar link is clicked
+  navbarLinks.forEach((link) => {
+    link.addEventListener("click", function () {
+      if (navbar.classList.contains("active")) {
+        navToggleBtn.classList.remove("active");
+        navbar.classList.remove("active");
+        document.body.classList.remove("active");
+      }
+    });
+  });
+
+  /**
+   * Skills Toggle
+   */
+  const toggleBtnBox = document.querySelector("[data-toggle-box]");
+  const toggleBtns = document.querySelectorAll("[data-toggle-btn]");
+  const skillsBox = document.querySelector("[data-skills-box]");
+
+  for (let i = 0; i < toggleBtns.length; i++) {
+    toggleBtns[i].addEventListener("click", function () {
+      elemToggleFunc(toggleBtnBox);
+      for (let i = 0; i < toggleBtns.length; i++) {
+        elemToggleFunc(toggleBtns[i]);
+      }
+      elemToggleFunc(skillsBox);
+    });
   }
 
-});
+  /**
+   * Dark & Light Theme Toggle
+   */
+  const themeToggleBtn = document.querySelector("[data-theme-btn]");
 
-/**
- * navbar toggle
- */
+  themeToggleBtn.addEventListener("click", function () {
+    elemToggleFunc(themeToggleBtn);
 
-const navToggleBtn = document.querySelector("[data-nav-toggle-btn]");
-const navbar = document.querySelector("[data-navbar]");
+    if (themeToggleBtn.classList.contains("active")) {
+      document.body.classList.remove("dark_theme");
+      document.body.classList.add("light_theme");
 
-navToggleBtn.addEventListener("click", function () {
+      localStorage.setItem("theme", "light_theme");
+    } else {
+      document.body.classList.add("dark_theme");
+      document.body.classList.remove("light_theme");
 
-  elemToggleFunc(navToggleBtn);
-  elemToggleFunc(navbar);
-  elemToggleFunc(document.body);
-
-});
-
-
-
-/**
- * skills toggle
- */
-
-const toggleBtnBox = document.querySelector("[data-toggle-box]");
-const toggleBtns = document.querySelectorAll("[data-toggle-btn]");
-const skillsBox = document.querySelector("[data-skills-box]");
-
-for (let i = 0; i < toggleBtns.length; i++) {
-  toggleBtns[i].addEventListener("click", function () {
-
-    elemToggleFunc(toggleBtnBox);
-    for (let i = 0; i < toggleBtns.length; i++) { elemToggleFunc(toggleBtns[i]); }
-    elemToggleFunc(skillsBox);
-
+      localStorage.setItem("theme", "dark_theme");
+    }
   });
-}
 
-
-
-/**
- * dark & light theme toggle
- */
-
-const themeToggleBtn = document.querySelector("[data-theme-btn]");
-
-themeToggleBtn.addEventListener("click", function () {
-
-  elemToggleFunc(themeToggleBtn);
-
-  if (themeToggleBtn.classList.contains("active")) {
+  /**
+   * Apply Last Selected Theme from Local Storage
+   */
+  if (localStorage.getItem("theme") === "light_theme") {
+    themeToggleBtn.classList.add("active");
     document.body.classList.remove("dark_theme");
     document.body.classList.add("light_theme");
-
-    localStorage.setItem("theme", "light_theme");
   } else {
-    document.body.classList.add("dark_theme");
+    themeToggleBtn.classList.remove("active");
     document.body.classList.remove("light_theme");
-
-    localStorage.setItem("theme", "dark_theme");
+    document.body.classList.add("dark_theme");
   }
-
 });
-
-/**
- * check & apply last time selected theme from localStorage
- */
-
-if (localStorage.getItem("theme") === "light_theme") {
-  themeToggleBtn.classList.add("active");
-  document.body.classList.remove("dark_theme");
-  document.body.classList.add("light_theme");
-} else {
-  themeToggleBtn.classList.remove("active");
-  document.body.classList.remove("light_theme");
-  document.body.classList.add("dark_theme");
-}
